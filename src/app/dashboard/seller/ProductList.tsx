@@ -10,9 +10,10 @@ import { Pencil, Trash2, X, Save } from "lucide-react";
 interface Props {
   products: Product[];
   shopId: string;
+  siteUrl: string;
 }
 
-export function ProductList({ products, shopId }: Props) {
+export function ProductList({ products, shopId, siteUrl }: Props) {
   const router = useRouter();
   const [editId, setEditId] = useState<string | null>(null);
   const [editData, setEditData] = useState<Partial<Product>>({});
@@ -49,7 +50,6 @@ export function ProductList({ products, shopId }: Props) {
   const deleteProduct = async (productId: string) => {
     if (!confirm("Delete this product? This cannot be undone.")) return;
     setLoading(productId);
-    // Pass shopId as query param — DELETE body is unreliable across environments
     await fetch(`/api/products/${productId}?shopId=${encodeURIComponent(shopId)}`, {
       method: "DELETE",
     });
@@ -62,7 +62,6 @@ export function ProductList({ products, shopId }: Props) {
       {products.map((p) => (
         <div key={p.id} className="card overflow-hidden">
           {editId === p.id ? (
-            /* ── Edit mode ── */
             <div className="p-5">
               <div className="flex flex-col gap-3">
                 <input
@@ -111,7 +110,6 @@ export function ProductList({ products, shopId }: Props) {
               </div>
             </div>
           ) : (
-            /* ── View mode ── */
             <div className="flex items-center gap-4 p-4">
               <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-100">
                 {p.image_url ? (
